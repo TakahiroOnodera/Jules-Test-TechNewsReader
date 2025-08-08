@@ -196,14 +196,28 @@ main {
 /* --- 9. レスポンシブデザイン (メディアクエリ) --- */
 @media (max-width: 768px) {
     body {
-        padding-top: 60px;
+        padding-top: 130px; /* 新しいヘッダーの高さに合わせて調整 */
     }
-    .search-container {
-        display: none; /* 中画面ではヘッダーの検索を非表示にすることも一案 */
+    .header-content {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        padding: 10px 0;
+        height: auto;
     }
     .site-title {
-        flex-grow: 1;
+        width: 100%;
         text-align: center;
+    }
+    .search-container {
+        width: 90%; /* 画面幅の90% */
+        margin: 0;
+        order: 1; /* タイトルの後に表示 */
+    }
+    #dark-mode-toggle {
+        position: absolute;
+        top: 15px;
+        right: 16px;
     }
 }
 
