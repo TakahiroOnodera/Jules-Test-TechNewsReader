@@ -115,21 +115,38 @@ async function fetchAndDisplayNews() {
 // --- 4. 検索フィルタリング機能 ---
 
 /**
- * 検索キーワードに基づいてニュースカードをフィルタリングする
+ * 検索キーワードに基づいてニュースカードをフィルタリングする（堅牢版）
  */
 function filterNews() {
-    const searchTerm = searchBox.value.toLowerCase();
-    const cards = document.querySelectorAll('.news-card');
+    try {
+        // searchBoxがnullでないことを確認してからvalueを取得
+        const searchTerm = searchBox ? searchBox.value.toLowerCase() : '';
+        const cards = document.querySelectorAll('.news-card');
 
-    cards.forEach(card => {
-        const title = card.querySelector('.card-title').textContent.toLowerCase();
-        // タイトルに検索語句が含まれていれば表示、そうでなければ非表示
-        if (title.includes(searchTerm)) {
-            card.classList.remove('hidden');
-        } else {
-            card.classList.add('hidden');
+        if (cards.length === 0) {
+            return; // カードがなければ何もしない
         }
-    });
+
+        cards.forEach(card => {
+            const titleElement = card.querySelector('.card-title');
+
+            // titleElementが存在し、かつtextContentを持つことを確認
+            if (titleElement && typeof titleElement.textContent === 'string') {
+                const title = titleElement.textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            } else {
+                // 予期せぬカード構造の場合、安全のため表示しておく
+                card.classList.remove('hidden');
+            }
+        });
+    } catch (error) {
+        console.error("An error occurred during filtering:", error);
+        // エラーが発生した場合でも、ユーザー操作を妨げないようにする
+    }
 }
 
 // --- 5. イベントリスナーの初期化 ---
