@@ -1,4 +1,5 @@
 import logging
+import os
 import requests
 from flask import Flask, jsonify, render_template
 
@@ -6,15 +7,13 @@ from flask import Flask, jsonify, render_template
 app = Flask(__name__)
 
 # --- ロギング設定 ---
-# フォーマットとレベルを設定し、コンソールにログを出力
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO, # INFOレベル以上のログを記録
                     format='%(asctime)s %(levelname)s %(message)s',
                     handlers=[logging.StreamHandler()])
 
-# --- Hacker News API 設定 ---
-HN_API_BASE_URL = "https://hacker-news.firebaseio.com/v0"
-TOP_STORIES_URL = f"{HN_API_BASE_URL}/topstories.json"
-ITEM_URL = f"{HN_API_BASE_URL}/item/"
+# --- NewsAPI 設定 ---
+NEWS_API_KEY = os.environ.get('NEWS_API_KEY')
+NEWS_API_URL = "https://newsapi.org/v2/top-headlines"
 
 # --- ルーティング ---
 
@@ -26,46 +25,51 @@ def index():
 
 @app.route('/api/news')
 def get_news():
-    """Hacker Newsのトップ記事を取得してJSONで返す"""
+    """NewsAPIから技術ニュースを取得してJSONで返す"""
     app.logger.info("Request received for /api/news")
+
+    # APIキーが設定されているか確認
+    if not NEWS_API_KEY:
+        app.logger.error("NEWS_API_KEY is not set.")
+        return jsonify({"error": "API key is not configured on the server."}), 500
+
+    # NewsAPIへのリクエストパラメータ
+    params = {
+        'apiKey': NEWS_API_KEY,
+        'category': 'technology',
+        'country': 'jp', # 日本のニュースを取得
+        'pageSize': 30 # 取得する記事数
+    }
+
     try:
-        # 1. トップ記事のIDリストを取得
-        response = requests.get(TOP_STORIES_URL, timeout=10)
+        # NewsAPIへリクエストを送信
+        response = requests.get(NEWS_API_URL, params=params, timeout=10)
         response.raise_for_status()  # HTTPエラーがあれば例外を発生
-        story_ids = response.json()
-        app.logger.info(f"Successfully fetched {len(story_ids)} story IDs.")
+        data = response.json()
 
-        # 2. 上位20件の記事詳細を取得
-        news_list = []
-        limit = 20
-        for story_id in story_ids[:limit]:
-            try:
-                item_response = requests.get(f"{ITEM_URL}{story_id}.json", timeout=5)
-                item_response.raise_for_status()
-                story_data = item_response.json()
-                # タイトルとURLを持つ記事のみをリストに追加
-                if story_data and 'title' in story_data and 'url' in story_data:
-                    news_list.append({
-                        'title': story_data['title'],
-                        'url': story_data['url']
-                    })
-            except requests.RequestException as e:
-                app.logger.error(f"Failed to fetch item {story_id}: {e}")
-                # 一つの記事取得に失敗しても処理を続行
-                continue
+        # 必要な情報（タイトル、発行元、要約、URL、画像URL）を抽出
+        articles = []
+        for article in data.get('articles', []):
+            # 記事に必要な情報が揃っているか確認
+            if all(k in article for k in ['title', 'url', 'description', 'urlToImage']) and article.get('source'):
+                articles.append({
+                    'title': article['title'],
+                    'source': article['source']['name'],
+                    'summary': article['description'],
+                    'url': article['url'],
+                    'image_url': article['urlToImage']
+                })
 
-        app.logger.info(f"Successfully fetched details for {len(news_list)} stories.")
-        return jsonify(news_list)
+        app.logger.info(f"Successfully fetched and processed {len(articles)} articles.")
+        return jsonify(articles)
 
     except requests.RequestException as e:
-        app.logger.error(f"Failed to fetch top stories from Hacker News API: {e}")
-        # API全体へのアクセスに失敗した場合はエラーを返す
-        return jsonify({"error": "Failed to retrieve news from Hacker News API"}), 500
+        app.logger.error(f"Failed to fetch news from NewsAPI: {e}")
+        return jsonify({"error": "Failed to retrieve news from the provider."}), 502 # 502 Bad Gateway
     except Exception as e:
         app.logger.error(f"An unexpected error occurred: {e}")
-        return jsonify({"error": "An unexpected server error occurred"}), 500
+        return jsonify({"error": "An unexpected server error occurred."}), 500
 
 # --- アプリケーション実行 ---
 if __name__ == '__main__':
-    # host='0.0.0.0' を指定して、Dockerコンテナの外部からアクセス可能にする
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000)

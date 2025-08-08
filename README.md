@@ -21,7 +21,16 @@
 
 1.  このリポジトリをクローンまたはダウンロードします。
 2.  ターミナルを開き、プロジェクトのルートディレクトリに移動します。
-3.  以下のコマンドを実行して、Dockerコンテナをビルドし、バックグラウンドで起動します。
+3.  `docker-compose.yml` ファイルを開き、`NEWS_API_KEY` の値をご自身のAPIキーに書き換えます。
+
+    ```yaml
+    environment:
+      - FLASK_ENV=development
+      # ここに取得したNewsAPIのキーを設定
+      - NEWS_API_KEY=YOUR_API_KEY_HERE
+    ```
+
+4.  以下のコマンドを実行して、Dockerコンテナをビルドし、バックグラウンドで起動します。
 
     ```bash
     docker-compose up --build -d

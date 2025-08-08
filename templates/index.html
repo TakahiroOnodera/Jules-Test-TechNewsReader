@@ -4,18 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tech News Reader</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <header>
-        <h1>Tech News Reader</h1>
+    <!-- ヘッダーエリア -->
+    <header class="site-header">
+        <div class="header-content">
+            <h1 class="site-title">Tech News</h1>
+            <!-- 検索フォーム -->
+            <div class="search-container">
+                <i class="fas fa-search search-icon"></i>
+                <input type="search" id="search-box" placeholder="記事を検索...">
+            </div>
+            <!-- ダークモード切り替えボタン -->
+            <button id="dark-mode-toggle" class="dark-mode-button">
+                <i class="fas fa-moon"></i>
+            </button>
+        </div>
     </header>
+
+    <!-- メインコンテンツエリア -->
     <main>
-        <ul id="news-list">
-            <!-- ニュースはJavaScriptによってここに挿入されます -->
-            <p>Loading news...</p>
-        </ul>
+        <!-- ニュースカードがここに挿入される -->
+        <div id="news-container" class="news-grid">
+            <!-- ローディングメッセージ -->
+            <p id="loading-message">Loading news...</p>
+        </div>
     </main>
+
+    <!-- JavaScriptファイル -->
     <script src="/static/js/script.js"></script>
 </body>
 </html>

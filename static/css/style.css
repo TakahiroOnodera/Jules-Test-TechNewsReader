@@ -1,66 +1,230 @@
-/* --- 全体的なスタイル --- */
+/* --- 1. 変数定義 (カラーパレットとテーマ) --- */
+/* :root はライトモードのデフォルト値を定義 */
+:root {
+    --primary-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --background-color: #f0f2f5;
+    --card-background-color: #ffffff;
+    --text-color: #1c1e21;
+    --subtle-text-color: #65676b;
+    --header-background-color: #ffffff;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --accent-color: #1877f2;
+    --border-color: #dddfe2;
+    --icon-color: #65676b;
+    --icon-hover-bg: #e4e6eb;
+}
+
+/* body.dark-mode が適用された場合に変数を上書き */
+body.dark-mode {
+    --background-color: #18191a;
+    --card-background-color: #242526;
+    --text-color: #e4e6eb;
+    --subtle-text-color: #b0b3b8;
+    --header-background-color: #242526;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --accent-color: #2d88ff;
+    --border-color: #3e4042;
+    --icon-color: #b0b3b8;
+    --icon-hover-bg: #3a3b3c;
+}
+
+/* --- 2. 基本スタイルとリセット --- */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: var(--primary-font);
     line-height: 1.6;
-    background-color: #f4f4f9;
-    color: #333;
+    background-color: var(--background-color);
+    color: var(--text-color);
     margin: 0;
-    padding: 0;
+    padding-top: 80px; /* ヘッダーの高さ分だけ余白を確保 */
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- コンテナ --- */
+/* --- 3. ヘッダー --- */
+.site-header {
+    background-color: var(--header-background-color);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px var(--shadow-color);
+    padding: 0 24px;
+    position: fixed; /* ヘッダーを画面上部に固定 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: background-color 0.3s, border-bottom 0.3s;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.site-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+    margin: 0;
+}
+
+/* --- 4. 検索ボックス --- */
+.search-container {
+    position: relative;
+    flex-grow: 1;
+    margin: 0 24px;
+    max-width: 400px;
+}
+
+#search-box {
+    width: 100%;
+    padding: 8px 16px 8px 40px; /* 左側にアイコン分のスペース */
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    outline: none;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--subtle-text-color);
+}
+
+/* --- 5. ダークモードボタン --- */
+#dark-mode-toggle {
+    background: none;
+    border: none;
+    color: var(--icon-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#dark-mode-toggle:hover {
+    background-color: var(--icon-hover-bg);
+}
+
+/* --- 6. メインコンテンツとニュースグリッド --- */
 main {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 2rem auto;
-    padding: 1rem;
-    background-color: #fff;
+    padding: 0 24px;
+}
+
+.news-grid {
+    display: grid;
+    /* 最小300px、最大1frのカードを敷き詰める */
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+/* --- 7. ニュースカード --- */
+.news-card {
+    background-color: var(--card-background-color);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* --- ヘッダー --- */
-header {
-    background-color: #4a4a4a;
-    color: #fff;
-    padding: 1rem 0;
-    text-align: center;
-}
-
-header h1 {
-    margin: 0;
-    font-size: 2rem;
-}
-
-/* --- ニュースリスト --- */
-#news-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#news-list li {
-    padding: 1rem;
-    border-bottom: 1px solid #eee;
-}
-
-#news-list li:last-child {
-    border-bottom: none;
-}
-
-#news-list a {
+    box-shadow: 0 2px 5px var(--shadow-color);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
     text-decoration: none;
-    color: #007bff;
-    font-weight: 500;
+    color: inherit;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-#news-list a:hover {
-    text-decoration: underline;
-    color: #0056b3;
+.news-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px var(--shadow-color);
 }
 
-/* --- ローディング/エラーメッセージ --- */
-#news-list p {
-    color: #888;
+.card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover; /* 画像のアスペクト比を保ちつつコンテナを埋める */
+    background-color: var(--border-color); /* 画像読み込み中の背景 */
+}
+
+.card-content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* カードの高さを揃えるため */
+}
+
+.card-source {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--subtle-text-color);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    color: var(--text-color);
+    line-height: 1.4;
+}
+
+.card-summary {
+    font-size: 0.9rem;
+    color: var(--subtle-text-color);
+    flex-grow: 1; /* タイトルの下、フッターの上にスペースを確保 */
+}
+
+/* --- 8. ローディング/エラーメッセージ --- */
+#loading-message {
+    grid-column: 1 / -1; /* グリッド全体にまたがるように設定 */
     text-align: center;
-    padding: 2rem;
+    font-size: 1.2rem;
+    color: var(--subtle-text-color);
+    padding: 4rem 0;
+}
+
+/* --- 9. レスポンシブデザイン (メディアクエリ) --- */
+@media (max-width: 768px) {
+    body {
+        padding-top: 60px;
+    }
+    .search-container {
+        display: none; /* 中画面ではヘッダーの検索を非表示にすることも一案 */
+    }
+    .site-title {
+        flex-grow: 1;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    main {
+        padding: 0 16px;
+    }
+    .header-content {
+        justify-content: center;
+    }
+    .site-title {
+        font-size: 1.2rem;
+    }
+    #dark-mode-toggle {
+        position: absolute;
+        right: 16px;
+    }
+}
+
+/* --- 10. ヘルパークラス --- */
+/* JavaScriptで検索フィルタリングに使用 */
+.hidden {
+    display: none;
 }
