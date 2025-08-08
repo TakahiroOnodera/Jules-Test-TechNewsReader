@@ -14,10 +14,11 @@
         <div class="header-content">
             <h1 class="site-title">Tech News</h1>
             <!-- 検索フォーム -->
-            <div class="search-container">
+            <form id="search-form" class="search-container">
                 <i class="fas fa-search search-icon"></i>
-                <input type="search" id="search-box" placeholder="記事を検索...">
-            </div>
+                <input type="search" id="search-box" placeholder="記事を検索..." autocomplete="off">
+                <button type="button" id="clear-search-btn" class="clear-search-button hidden">&times;</button>
+            </form>
             <!-- ダークモード切り替えボタン -->
             <button id="dark-mode-toggle" class="dark-mode-button">
                 <i class="fas fa-moon"></i>
@@ -29,8 +30,12 @@
     <main>
         <!-- ニュースカードがここに挿入される -->
         <div id="news-container" class="news-grid">
-            <!-- ローディングメッセージ -->
+            <!-- ローディングメッセージがここに表示される -->
             <p id="loading-message">Loading news...</p>
+        </div>
+        <!-- 検索結果がない場合に表示するメッセージ -->
+        <div id="no-results-message" class="no-results hidden">
+            <p>No articles found matching your search.</p>
         </div>
     </main>
 

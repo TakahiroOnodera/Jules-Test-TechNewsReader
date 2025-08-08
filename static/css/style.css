@@ -79,7 +79,7 @@ body {
 
 #search-box {
     width: 100%;
-    padding: 8px 16px 8px 40px; /* 左側にアイコン分のスペース */
+    padding: 8px 40px; /* 左右のアイコン用のスペース */
     border-radius: 20px;
     border: 1px solid var(--border-color);
     background-color: var(--background-color);
@@ -191,6 +191,37 @@ main {
     font-size: 1.2rem;
     color: var(--subtle-text-color);
     padding: 4rem 0;
+}
+
+/* --- 8a. 検索クリアボタン --- */
+.clear-search-button {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    line-height: 1;
+    color: var(--subtle-text-color);
+    cursor: pointer;
+    padding: 0 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-search-button:hover {
+    color: var(--text-color);
+}
+
+/* --- 8b. 結果なしメッセージ --- */
+.no-results {
+    grid-column: 1 / -1; /* グリッドレイアウト内で中央に配置 */
+    text-align: center;
+    padding: 4rem 0;
+    color: var(--subtle-text-color);
+    font-size: 1.2rem;
 }
 
 /* --- 9. レスポンシブデザイン (メディアクエリ) --- */
