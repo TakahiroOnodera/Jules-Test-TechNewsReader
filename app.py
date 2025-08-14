@@ -37,7 +37,7 @@ def get_news():
     params = {
         'apiKey': NEWS_API_KEY,
         'category': 'technology',
-        'country': 'jp', # 日本のニュースを取得
+        'country': 'us', # 米国のニュースを取得
         'pageSize': 30 # 取得する記事数
     }
 
