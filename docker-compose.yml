@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   web:
     # Dockerfileがあるカレントディレクトリをビルドコンテキストとして使用
@@ -13,6 +11,7 @@ services:
       - .:/app
     # 環境変数
     environment:
-      - FLASK_ENV=development
+      # Flaskのデバッグモードを有効にする (新しい形式)
+      - FLASK_DEBUG=1
       # ここに取得したNewsAPIのキーを設定
       - NEWS_API_KEY=37ea12f90efa480393cae46c48cd0475
